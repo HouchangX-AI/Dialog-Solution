@@ -1,0 +1,10 @@
+data
+log
+save
+*.txt
+.DS_Store
+__pycache__
+seq2seq
+seq2seq_dialog
+task_dialog
+E-commerce
