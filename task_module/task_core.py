@@ -4,7 +4,7 @@ from .intent_cls import train_eval
 from importlib import import_module
 import pickle as pkl
 import re
-
+import jieba
 from task_module import start_task
 from task_module import unbind_task
 from task_module import price_protect_task
@@ -23,7 +23,7 @@ from utils.tools import log_print
 
 
 def label(text, model_name="TextCNN", embedding="random", dataset="cls_data"):
-    x = import_module("models." + model_name)
+    x = import_module("task_module.intent_cls.models." + model_name)
     config = x.Config(dataset, embedding)
 
     vocab = pkl.load(open(config.vocab_path, "rb"))
@@ -36,10 +36,16 @@ def label(text, model_name="TextCNN", embedding="random", dataset="cls_data"):
         ).unsqueeze(0),
         torch.tensor(len(text)),
     )
-    model.load_state_dict(torch.load("../intent_cls/cls_data/saved_dict/TextCNN.ckpt"))
-    pred = predict(text, config, model)
+    model.load_state_dict(
+        torch.load(
+            "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/task_module/intent_cls/cls_data/saved_dict/TextCNN.ckpt"
+        )
+    )
+    pred = train_eval.predict(text, config, model)
     class_dic = {}
-    with open("../intent_cls/cls_data/data/class.txt") as f:
+    with open(
+        "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/task_module/intent_cls/cls_data/data/class.txt"
+    ) as f:
         lines = f.readlines()
         for line in lines:
             txt, label = line.strip().split("\t")
@@ -106,7 +112,7 @@ class TaskCore(object):
                 dialog_status.intent = None
 
             dialog_status = self._slots_update(msg, dialog_status)
-            task_type = label(msg)
+            task_type = label(" ".join(jieba.cut(msg)))
             dialog_status.intent = task_type
             if task_type != "not_task":
                 handle_func = self.intent_handle_func[dialog_status.intent]

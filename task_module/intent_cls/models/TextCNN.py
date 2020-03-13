@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+import os
 
 
 class Config(object):
@@ -16,9 +17,18 @@ class Config(object):
         self.test_path = dataset + "/data/test.txt"  # 测试集
         self.class_list = [
             x.strip()
-            for x in open(dataset + "/data/class.txt", encoding="utf-8").readlines()
+            for x in open(
+                "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/task_module/intent_cls/"
+                + dataset
+                + "/data/class.txt",
+                encoding="utf-8",
+            ).readlines()
         ]  # 类别名单
-        self.vocab_path = dataset + "/data/vocab.pkl"  # 词表
+        self.vocab_path = (
+            "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/task_module/intent_cls/"
+            + dataset
+            + "/data/vocab.pkl"
+        )  # 词表
         self.save_path = dataset + "/saved_dict/" + self.model_name + ".ckpt"  # 模型训练结果
         self.log_path = dataset + "/log/" + self.model_name
         self.embedding_pretrained = (
