@@ -3,11 +3,15 @@
 
 
 from search_dialog.search_core import SearchCore
-from seq2seq_dialog.infer import get_infer_model, predict
+
+# from seq2seq_dialog.infer import get_infer_model, predict
 from task_module.task_core import TaskCore
 from utils.nlp_util import NlpUtil
 from utils.tools import ch_count
 from utils.tools import log_print
+from seq2seq_pytorch.main import parseFilename
+from seq2seq_pytorch.evaluate import predict
+import torch
 
 
 class DialogStatus(object):
@@ -41,13 +45,29 @@ class DialogStatus(object):
 
 class DialogManagement(object):
     def __init__(self):
-        #       self.seq2seq_inst = get_infer_model(dialog_mode="single_turn")
+        # self.seq2seq_inst = get_infer_model(dialog_mode="single_turn")
         self.dialog_status = DialogStatus()
+        self.voc = torch.load(
+            "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/seq2seq_pytorch/data/single_train/voc.tar"
+        )
+        self.model_path = "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/seq2seq_pytorch/save/model/2-2_256/2000_backup_bidir_model.tar"
 
     def _predict_via_seq2seq(self, msg_tokens):
         user_msgs = " ".join(self.dialog_status.context[::2][-4:])
         log_print("seq2seq_input=%s" % user_msgs)
-        response = predict(self.seq2seq_inst, user_msgs, ret_size=1)
+
+        n_layers, hidden_size, reverse = parseFilename(self.model_path, True)
+        response = predict(
+            n_layers,
+            hidden_size,
+            reverse,
+            self.model_path,
+            beam_size=1,
+            msg=user_msgs,
+            voc=self.voc,
+        )
+
+        # response = predict(self.seq2seq_inst, user_msgs, ret_size=1)
         return response
 
     def process_dialog(self, msg, use_task=True):

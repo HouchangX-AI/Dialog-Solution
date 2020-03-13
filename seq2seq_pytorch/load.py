@@ -3,7 +3,7 @@ import re
 import os
 import unicodedata
 
-from config import MAX_LENGTH, save_dir
+from .config import MAX_LENGTH, save_dir
 
 SOS_token = 0
 EOS_token = 1
@@ -98,6 +98,8 @@ def prepareData(corpus, corpus_name):
 def loadPrepareData(corpus):
     # corpus_name = corpus.split('/')[-1].split('.')[0]
     corpus_name = corpus.split(".")[0]
+    print(corpus_name)
+    print(os.path.join(save_dir, "training_data", corpus_name, "voc.tar"))
     try:
         print("Start loading training data ...")
         voc = torch.load(
@@ -110,3 +112,10 @@ def loadPrepareData(corpus):
         print("Saved data not found, start preparing trianing data ...")
         voc, pairs = prepareData(corpus, corpus_name)
     return voc, pairs
+
+
+if __name__ == "__main__":
+    voc, pairs = loadPrepareData(
+        "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/seq2seq_pytorch/data/single_train.txt"
+    )
+

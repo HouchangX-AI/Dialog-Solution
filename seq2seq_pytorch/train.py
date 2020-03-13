@@ -9,10 +9,10 @@ import random
 import math
 import os
 from tqdm import tqdm
-from load import loadPrepareData
-from load import SOS_token, EOS_token, PAD_token
-from model import EncoderRNN, LuongAttnDecoderRNN
-from config import MAX_LENGTH, teacher_forcing_ratio, save_dir
+from .load import loadPrepareData
+from .load import SOS_token, EOS_token, PAD_token
+from .model import EncoderRNN, LuongAttnDecoderRNN
+from .config import MAX_LENGTH, teacher_forcing_ratio, save_dir
 
 USE_CUDA = torch.cuda.is_available()
 device = torch.device("cuda" if USE_CUDA else "cpu")
