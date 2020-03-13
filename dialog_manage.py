@@ -10,6 +10,7 @@ from utils.nlp_util import NlpUtil
 from utils.tools import ch_count
 from utils.tools import log_print
 from seq2seq_pytorch.main import parseFilename
+from seq2seq_pytorch.load import Voc
 from seq2seq_pytorch.evaluate import predict
 import torch
 

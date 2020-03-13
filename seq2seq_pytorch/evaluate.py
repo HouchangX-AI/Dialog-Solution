@@ -4,6 +4,7 @@ from .train import indexesFromSentence
 from .load import SOS_token, EOS_token
 from .load import MAX_LENGTH, loadPrepareData, Voc
 from .model import *
+import jieba
 
 USE_CUDA = torch.cuda.is_available()
 device = torch.device("cuda" if USE_CUDA else "cpu")
@@ -117,7 +118,9 @@ def decode(decoder, decoder_hidden, encoder_outputs, voc, max_length=MAX_LENGTH)
 
 
 def evaluate(encoder, decoder, voc, sentence, beam_size, max_length=MAX_LENGTH):
-    indexes_batch = [indexesFromSentence(voc, sentence)]  # [1, seq_len]
+    indexes_batch = [
+        indexesFromSentence(voc, " ".join(jieba.cut(sentence)))
+    ]  # [1, seq_len]
     lengths = [len(indexes) for indexes in indexes_batch]
     input_batch = torch.LongTensor(indexes_batch).transpose(0, 1)
     input_batch = input_batch.to(device)
@@ -221,11 +224,11 @@ def predict(n_layers, hidden_size, reverse, modelFile, beam_size, msg, voc):
     decoder = decoder.to(device)
     if beam_size == 1:
         output_words, _ = evaluate(encoder, decoder, voc, msg, beam_size)
-        output_sentence = " ".join(output_words)
+        output_sentence = "".join(output_words)
         # print("<", output_sentence)
         return output_sentence
     else:
         output_words_list = evaluate(encoder, decoder, voc, msg, beam_size)
         for output_words, score in output_words_list:
-            output_sentence = " ".join(output_words)
+            output_sentence = "".join(output_words)
             print("{:.3f} < {}".format(score, output_sentence))

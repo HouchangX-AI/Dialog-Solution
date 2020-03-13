@@ -115,7 +115,7 @@ def loadPrepareData(corpus):
 
 
 if __name__ == "__main__":
-    voc, pairs = loadPrepareData(
-        "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/seq2seq_pytorch/data/single_train.txt"
+    pairs = torch.load(
+        "/Users/nansu/Desktop/work/chatbot/Dialog-Solution/seq2seq_pytorch/data/single_train/voc.tar"
     )
 
